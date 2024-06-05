@@ -10,8 +10,9 @@ require("rpart")
 require("parallel")
 
 PARAM <- list()
-# reemplazar por las propias semillas
+# reemplazar por las propias semillas 
 PARAM$semillas <- c(171182, 843110, 250915, 180301, 111909)
+
 
 #------------------------------------------------------------------------------
 # particionar agrega una columna llamada fold a un dataset
@@ -78,7 +79,7 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
     semillas, # paso el vector de semillas
     MoreArgs = list(param_basicos), # aqui paso el segundo parametro
     SIMPLIFY = FALSE,
-    mc.cores = 5 # en Windows este valor debe ser 1
+    mc.cores = 1 # en Windows este valor debe ser 1
   )
 
   ganancia_promedio <- mean(unlist(ganancias))
@@ -89,11 +90,11 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("~/buckets/b1/") # Establezco el Working Directory
+setwd("C:/Users/Lautaro/Documents/GitHub/dm2024b/src/rpart") # Establezco el Working Directory
 # cargo los datos
 
 # cargo los datos
-dataset <- fread("~/datasets/dataset_pequeno.csv")
+dataset <- fread("dataset_pequeno.csv")
 
 # trabajo solo con los datos con clase, es decir 202107
 dataset <- dataset[clase_ternaria != ""]
@@ -108,14 +109,24 @@ archivo_salida <- "./exp/HT2020/gridsearch.txt"
 # genero la data.table donde van los resultados del Grid Search
 tb_grid_search <- data.table( max_depth = integer(),
                               min_split = integer(),
+                              cp = numeric(),
+                              min_bucket = integer(),
                               ganancia_promedio = numeric() )
 
 
 # itero por los loops anidados para cada hiperparametro
 
-for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
-  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
-    # notar como se agrega
+for (vmax_depth in c(4, 6, 8)) { #, 10, 12, 14
+  for (vmin_split in c(400, 200, 100)) { #1000, 800, 600 , 50, 20, 10
+    for (vcp in c(-0.1, -0.01, -0.001)) { #-0.5, -0.3,
+      for (vmin_bucket in c(30, 50, 100)) { #5, 10, 20,
+        param_basicos <- list(
+          "cp" = vcp,
+          "minsplit" = vmin_split,
+          "minbucket" = vmin_bucket,
+          "maxdepth" = vmax_depth
+        )
+        # notar como se agrega
 
     # vminsplit  minima cantidad de registros en un nodo para hacer el split
     param_basicos <- list(
@@ -131,8 +142,9 @@ for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
     # agrego a la tabla
     tb_grid_search <- rbindlist( 
       list( tb_grid_search, 
-            list( vmax_depth, vmin_split, ganancia_promedio) ) )
-
+            list( vmax_depth, vmin_split, vcp, vmin_bucket, ganancia_promedio) ) )
+      }
+    }
   }
 
   # escribo la tabla a disco en cada vuelta del loop mas externo
