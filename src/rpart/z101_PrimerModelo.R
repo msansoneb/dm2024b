@@ -7,10 +7,10 @@ require("rpart")
 require("rpart.plot")
 
 # Aqui se debe poner la carpeta de la materia de SU computadora local
-setwd("X:\\gdrive\\itba2024a\\") # Establezco el Working Directory
+setwd("C:/Users/Usuario/Documents/Ciencia de Datos/GitHub/dm2024b/src/rpart") # Establezco el Working Directory
 
 # cargo el dataset
-dataset <- fread("./datasets/dataset_pequeno.csv")
+dataset <- fread("dataset_pequeno.csv")
 
 dtrain <- dataset[foto_mes == 202107] # defino donde voy a entrenar
 dapply <- dataset[foto_mes == 202109] # defino donde voy a aplicar el modelo
@@ -21,18 +21,20 @@ modelo <- rpart(
         formula = "clase_ternaria ~ .",
         data = dtrain, # los datos donde voy a entrenar
         xval = 0,
-        cp = -0.3, # esto significa no limitar la complejidad de los splits
-        minsplit = 0, # minima cantidad de registros para que se haga el split
-        minbucket = 1, # tamaño minimo de una hoja
-        maxdepth = 3
+        cp = -0.5, # esto significa no limitar la complejidad de los splits
+        minsplit = 50, # minima cantidad de registros para que se haga el split
+        minbucket = 25, # tamaño minimo de una hoja
+        maxdepth = 4
 ) # profundidad maxima del arbol
 
 
 # grafico el arbol
+pdf("arbolitoDpdf", width = 10, height = 8)
 prp(modelo,
         extra = 101, digits = -5,
         branch = 1, type = 4, varlen = 0, faclen = 0
 )
+dev.off()
 
 
 # aplico el modelo a los datos nuevos
@@ -55,11 +57,11 @@ dapply[, Predicted := as.numeric(prob_baja2 > 1 / 40)]
 
 # genero el archivo para Kaggle
 # primero creo la carpeta donde va el experimento
-dir.create("./exp/")
-dir.create("./exp/KA2001")
+#dir.create("./exp/")
+#dir.create("./exp/KA2001-1")
 
 # solo los campos para Kaggle
 fwrite(dapply[, list(numero_de_cliente, Predicted)],
-        file = "./exp/KA2001/K101_001.csv",
+        file = "./exp/KA2001-1/K101_001D.csv",
         sep = ","
 )
