@@ -11,7 +11,7 @@ require("parallel")
 
 PARAM <- list()
 # reemplazar por las propias semillas 
-PARAM$semillas <- c(171182, 843110, 250915, 180301, 111909)
+PARAM$semillas <- c(100019, 100057, 100193, 999931, 999959)
 
 
 #------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ ArbolesMontecarlo <- function(semillas, param_basicos) {
 #------------------------------------------------------------------------------
 
 # Aqui se debe poner la carpeta de la computadora local
-setwd("C:/Users/Lautaro/Documents/GitHub/dm2024b/src/rpart") # Establezco el Working Directory
+setwd("rpart") # Establezco el Working Directory
 # cargo los datos
 
 # cargo los datos
@@ -116,10 +116,10 @@ tb_grid_search <- data.table( max_depth = integer(),
 
 # itero por los loops anidados para cada hiperparametro
 
-for (vmax_depth in c(4, 6, 8)) { # 10, 12, 14
-  for (vmin_split in c(400, 200, 100)) { #1000, 800, 600, 50, 20, 10
-    for (vcp in c(-0.5, -0.3, 0.01)) { #-0.4, -0.2
-      for (vmin_bucket in c(30, 50, 100)) { #5, 10, 20,
+for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {  
+  for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) { 
+    for (vcp in c(-0.5, -0.3, -0.01, 0.01)) { 
+      for (vmin_bucket in c(5, 10, 20, 30, 50, 100)) {
         param_basicos <- list(
           "cp" = vcp,
           "minsplit" = vmin_split,
