@@ -53,10 +53,10 @@ modelo <- ranger(
   formula = "clase_ternaria ~ .",
   data = dtrain,
   probability = TRUE, # para que devuelva las probabilidades
-  num.trees = param$num.trees,
-  mtry = param$mtry,
-  min.node.size = param$min.node.size,
-  max.depth = param$max.depth
+  num.trees = 423,
+  mtry = 45,
+  min.node.size = 390,
+  max.depth = 12
 )
 
 
