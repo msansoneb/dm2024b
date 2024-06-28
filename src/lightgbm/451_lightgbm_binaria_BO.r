@@ -33,7 +33,7 @@ options(error = function() {
 #  muy pronto esto se leera desde un archivo formato .yaml
 PARAM <- list()
 
-PARAM$experimento <- "HT4510"
+PARAM$experimento <- "HT45101"
 
 PARAM$input$dataset <- "./datasets/dataset_pequeno.csv"
 PARAM$input$training <- c(202107) # los meses en los que vamos a entrenar
@@ -52,9 +52,11 @@ PARAM$hyperparametertuning$NEG_ganancia <- -3000
 # Aqui se cargan los bordes de los hiperparametros
 hs <- makeParamSet(
   makeNumericParam("learning_rate", lower = 0.01, upper = 0.3),
-  makeNumericParam("feature_fraction", lower = 0.2, upper = 1.0),
-  makeIntegerParam("min_data_in_leaf", lower = 1L, upper = 8000L),
-  makeIntegerParam("num_leaves", lower = 16L, upper = 1024L),
+  makeNumericParam("feature_fraction", lower = 0, upper = 1.0),
+  makeIntegerParam("min_data_in_leaf", lower = 100L, upper = 8000L),
+  makeIntegerParam("num_leaves", lower = 20L, upper = 3000L),
+  makeIntegerParam("max_depth", lower = 3L, upper = 12L),
+  makeNumericParam("bagging_fraction", lower = 0, upper = 1.0),
   makeIntegerParam("envios", lower = 5000L, upper = 15000L)
 )
 
@@ -138,7 +140,6 @@ EstimarGanancia_lightgbm <- function(x) {
     boost_from_average = TRUE,
     feature_pre_filter = FALSE,
     verbosity = -100,
-    max_depth = -1, # -1 significa no limitar,  por ahora lo dejo fijo
     min_gain_to_split = 0.0, # por ahora, lo dejo fijo
     lambda_l1 = 0.0, # por ahora, lo dejo fijo
     lambda_l2 = 0.0, # por ahora, lo dejo fijo
