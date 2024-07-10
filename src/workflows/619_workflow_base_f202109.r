@@ -97,7 +97,7 @@ FEintra_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z531_FE_intrames.r"
+  param_local$meta$script <- "/src/wf-etapas/531_FE_intrames.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -112,7 +112,7 @@ DR_drifting_base <- function( pinputexps, metodo)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z541_DR_corregir_drifting.r"
+  param_local$meta$script <- "/src/wf-etapas/541_DR_corregir_drifting.r"
 
   # valores posibles
   #  "ninguno", "rank_simple", "rank_cero_fijo", "deflacion", "estandarizar"
@@ -130,11 +130,11 @@ FEhist_base <- function( pinputexps)
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/wf-etapas/z551_FE_historia.r"
+  param_local$meta$script <- "/src/wf-etapas/551_FE_historia.r"
 
   param_local$lag1 <- TRUE
-  param_local$lag2 <- FALSE # no me engraso con los lags de orden 2
-  param_local$lag3 <- FALSE # no me engraso con los lags de orden 3
+  param_local$lag2 <- TRUE # no me engraso con los lags de orden 2
+  param_local$lag3 <- TRUE # no me engraso con los lags de orden 3
 
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
@@ -261,14 +261,13 @@ TS_strategy_base9 <- function( pinputexps )
 
 
   param_local$future <- c(202109)
-  param_local$final_train <- c(202007, 202006, 202105, 202104,
-    202103, 202102, 202101, 202012, 202011)
-
-
-  param_local$train$training <- c(202105, 202104, 202103,
-     202102, 202101, 202012, 202011, 202010, 202009)
-  param_local$train$validation <- c(202106)
-  param_local$train$testing <- c(202107)
+  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011)
+  
+  
+  param_local$train$training <- c(202101, 202012, 202011, 202010, 202009, 202008,
+                                  202007, 202006, 202005)
+  param_local$train$validation <- c(202103)
+  param_local$train$testing <- c(202105, 202104)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -331,15 +330,15 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.8 ),
-    feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 100L, 10000L, "integer" )
+    learning_rate = c( 0.001, 0.5 ),
+    feature_fraction = c( 0.4, 1.0 ),
+    num_leaves = c( 8L, 3048L,  "integer" ),
+    min_data_in_leaf = c( 100L, 15000L, "integer" )
   )
 
 
   # una Bayesian humilde, pero no descabellada
-  param_local$bo_iteraciones <- 60 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 80 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -366,14 +365,14 @@ ZZ_final_base9 <- function( pinputexps )
   param_local$train$gan0 <-  -3000
   param_local$train$meseta <- 2001
 
-  param_local$kaggle$envios_desde <-  8000L
-  param_local$kaggle$envios_hasta <- 14000L
+  param_local$kaggle$envios_desde <-  9500L
+  param_local$kaggle$envios_hasta <- 12500L
   param_local$kaggle$envios_salto <-   500L
   param_local$kaggle$competition <- "itba-data-mining-2024-cohorteb"
 
 
   # default 5 semillas
-  param_local$qsemillas <- 5
+  param_local$qsemillas <- 14
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -390,11 +389,11 @@ wf_sept <- function( pnombrewf )
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  CA_catastrophe_base( metodo="MachineLearning")
+  CA_catastrophe_base( metodo="Ninguno")
   FEintra_base()
-  DR_drifting_base(metodo="rank_cero_fijo")
+  DR_drifting_base(metodo="uva")
   FEhist_base()
-  FErf_attributes_base()
+  #FErf_attributes_base()
   #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
 
   ts9 <- TS_strategy_base9()
