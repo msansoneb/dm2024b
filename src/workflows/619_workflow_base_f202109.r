@@ -179,10 +179,10 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   # parametros para que LightGBM se comporte como Random Forest
   param_local$lgb_param <- list(
     # parametros que se pueden cambiar
-    num_iterations = 50,
-    num_leaves  = 40,
-    min_data_in_leaf = 300,
-    feature_fraction_bynode  = 0.1,
+    num_iterations = 20,
+    num_leaves  = 32,
+    min_data_in_leaf = 1000,
+    feature_fraction_bynode  = 0.2,
 
     # para que LightGBM emule Random Forest
     boosting = "rf",
@@ -261,13 +261,12 @@ TS_strategy_base9 <- function( pinputexps )
 
 
   param_local$future <- c(202109)
-  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011)
+  param_local$final_train <- c(202107, 202106, 202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007, 202005, 202004, 202003, 202002, 202001)
   
   
-  param_local$train$training <- c(202101, 202012, 202011, 202010, 202009, 202008,
-                                  202007, 202006, 202005)
-  param_local$train$validation <- c(202103)
-  param_local$train$testing <- c(202105, 202104)
+  param_local$train$training <- c(202105, 202104, 202103, 202102, 202101, 202012, 202011, 202010, 202009, 202008, 202007, 202005, 202004, 202003, 202002, 202001, 201912, 201911)
+  param_local$train$validation <- c(202106)
+  param_local$train$testing <- c(202107)
 
   # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
   # 1.0 significa NO undersampling
@@ -338,7 +337,7 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
 
 
   # una Bayesian humilde, pero no descabellada
-  param_local$bo_iteraciones <- 80 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 60 # iteraciones de la Optimizacion Bayesiana
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -393,8 +392,8 @@ wf_sept <- function( pnombrewf )
   FEintra_base()
   DR_drifting_base(metodo="uva")
   FEhist_base()
-  #FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  ##FErf_attributes_base()
+  CN_canaritos_asesinos_base(ratio=1.0, desvio=1.75)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base()
