@@ -141,7 +141,7 @@ FEhist_base <- function( pinputexps)
   
   # no me engraso las manos con las tendencias
   param_local$Tendencias1$run <- TRUE  # FALSE, no corre nada de lo que sigue
-  param_local$Tendencias1$ventana <- 6
+  param_local$Tendencias1$ventana <- 9
   param_local$Tendencias1$tendencia <- TRUE
   param_local$Tendencias1$minimo <- FALSE
   param_local$Tendencias1$maximo <- FALSE
@@ -151,7 +151,7 @@ FEhist_base <- function( pinputexps)
   
   # no me engraso las manos con las tendencias de segundo orden
   param_local$Tendencias2$run <- FALSE
-  param_local$Tendencias2$ventana <- 12
+  param_local$Tendencias2$ventana <- 9
   param_local$Tendencias2$tendencia <- FALSE
   param_local$Tendencias2$minimo <- FALSE
   param_local$Tendencias2$maximo <- FALSE
@@ -376,7 +376,7 @@ ZZ_final_semillerio_base9 <- function( pinputexps )
   # El parametro fundamental de semillerio
   # Es la cantidad de LightGBM's que ensamblo
   # cuanto mas grande mejor, pero asintotico
-  param_local$semillerio <- 30
+  param_local$semillerio <- 100
   
   return( exp_correr_script( param_local ) ) # linea fija
 }
